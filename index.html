@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Access Portal</title>
+    <title>Premium Video Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2563eb;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --text: #1e293b;
             --card: #ffffff;
         }
@@ -29,110 +29,144 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             background: var(--card);
             border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             border: 1px solid #e2e8f0;
         }
 
-        h1 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #0f172a;
-            font-weight: 800;
+        /* Video Player UI */
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-video {
-            width: 220px;
-            height: 220px;
-            background: var(--primary);
-            color: white;
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #222, #000);
+            cursor: pointer;
+        }
+
+        /* Fake Play Button */
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #fff;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .play-btn svg {
+            fill: #fff;
+            width: 32px;
+            height: 32px;
+            margin-left: 5px;
+        }
+
+        .video-placeholder:hover .play-btn {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Fake Progress Bar */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-bar-fake {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .progress-fill-fake {
+            width: 0%;
+            height: 100%;
+            background: #ff0000;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .btn-video {
+            padding: 18px 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 99px;
+            font-size: 1.1rem;
             font-weight: 800;
             cursor: pointer;
             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
-            border: 6px solid #dbeafe;
-            text-align: center;
-            line-height: 1.2;
+            border: none;
             transition: all 0.2s;
             margin: 0 auto;
             text-transform: uppercase;
-            -webkit-tap-highlight-color: transparent;
+            width: 80%;
         }
 
-        .btn-video:active {
-            transform: scale(0.95);
+        .btn-video:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
         }
 
         .disabled {
             background: #94a3b8 !important;
             cursor: not-allowed !important;
             box-shadow: none !important;
-            border-color: #e2e8f0 !important;
         }
 
-        #setup-ui,
-        #open-ui {
-            width: 100%;
-        }
-
-        #open-ui {
-            display: none;
-        }
-
-        textarea {
-            width: 100%;
-            height: 120px;
-            background: #fff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 12px;
+        .status-header {
+            font-weight: 800;
+            font-size: 1.3rem;
             margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .btn-admin {
-            background: #1e293b;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            width: 100%;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .status-box {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 16px;
-            background: #f1f5f9;
+            color: #0f172a;
         }
 
         #timer-label {
-            font-size: 0.95rem;
-            color: #2563eb;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 15px;
             font-weight: 600;
-            line-height: 1.4;
-            margin-top: 5px;
+            line-height: 1.5;
         }
 
         #error-box {
             background: #fef2f2;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
             display: none;
             font-size: 0.85rem;
             border: 1px solid #fecaca;
@@ -152,13 +186,13 @@
             z-index: 1000;
         }
 
-        .timer-circle {
-            width: 100px;
-            height: 100px;
+        .loader-ring {
+            width: 80px;
+            height: 80px;
             border: 6px solid #f1f5f9;
-            border-top: 6px solid #2563eb;
+            border-top: 6px solid var(--primary);
             border-radius: 50%;
-            animation: spin 1.5s linear infinite;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
@@ -171,21 +205,36 @@
             }
         }
 
-        .timer-val {
+        .timer-display {
             position: absolute;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: #2563eb;
+            color: var(--text);
         }
 
-        .branding {
-            margin-top: 25px;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
+        #setup-ui {
+            text-align: left;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+
+        .btn-admin {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 700;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -193,46 +242,73 @@
 <body>
 
     <div class="container">
-        <!-- ADMIN AREA -->
+        <!-- SETUP -->
         <div id="setup-ui">
-            <h1>Portal Admin Setup</h1>
-            <textarea id="links-input" placeholder="Paste your links here..."></textarea>
-            <button class="btn-admin" onclick="generateMaster()">Generate Link</button>
+            <h1>Portal Console</h1>
+            <p style="font-size: 0.85rem; color: #64748b;">Configure secure rotation links.</p>
+            <textarea id="links-input" placeholder="Paste secret links here (one per line)..."></textarea>
+            <button class="btn-admin" onclick="generateMaster()">Initialize Secure Portal</button>
         </div>
 
-        <!-- USER AREA -->
-        <div id="open-ui">
-            <h1>Video Access Portal</h1>
-            <div id="main-btn" class="btn-video" onclick="startVerification()">UNLOCK<br>VIDEO<br>LINK</div>
-            <div class="status-box">
-                <div style="font-weight:700; color:#475569;">Step 0 of 1: Security Check</div>
-                <div id="timer-label">YOU MUST KEEP THE TAB OPEN FOR <span class="wait-time">30</span> SECONDS</div>
-                <div id="error-box"><span id="err-text" style="color:#dc2626; font-weight:600;"></span></div>
+        <!-- PLAYER -->
+        <div id="open-ui" style="display: none;">
+            <div class="status-header">Step 0 of 1: Preliminary Verification</div>
+
+            <div class="video-wrapper">
+                <div class="video-placeholder" onclick="startVerification()">
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Fake Controls -->
+                <div class="video-controls">
+                    <svg width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                    <div class="progress-bar-fake">
+                        <div id="fake-progress" class="progress-fill-fake"></div>
+                    </div>
+                    <span style="font-size:10px; color:#fff;">00:<span id="fake-timer">00</span> / 01:24</span>
+                </div>
             </div>
-            <div class="branding">Secure Verification System</div>
+
+            <button id="main-btn" class="btn-video" onclick="startVerification()">Unlock Full Video</button>
+
+            <div id="error-box">
+                <span id="err-text" style="color:#dc2626; font-weight:600; text-transform: uppercase;"></span>
+            </div>
+
+            <p id="timer-label">YOU MUST VERIFY YOUR SESSION TO REMOVE THE LIMITS. <br> KEEP THE TAB OPEN AND WAIT FOR
+                10 SECONDS.</p>
+
+            <div
+                style="margin-top:25px; font-size: 0.7rem; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                ENCRYPTED SECURITY PROTOCOL ACTIVE
+            </div>
         </div>
     </div>
 
     <!-- OVERLAY -->
     <div id="overlay">
-        <div class="timer-circle"></div>
-        <div class="timer-val" id="countdown">10</div>
-        <p style="margin-top:20px; font-weight:800;">Verifying Session...</p>
+        <div class="loader-ring"></div>
+        <div class="timer-display" id="countdown">10</div>
+        <p style="margin-top:30px; font-weight:800; color: #0f172a;">Syncing Server Data...</p>
+        <p style="color:#64748b; font-size: 0.85rem; margin-top: 8px;">Keep the secondary tab active to complete sync.
+        </p>
     </div>
 
     <script>
-        /* ========================================== */
-        /*   ONLY CHANGE THIS NUMBER (COUNTDOWN TIME) */
-        /* ========================================== */
-        const WAIT_SECONDS = 30;
-        /* ========================================== */
-
+        const WAIT_SECONDS = 10;
         let links = [];
         let index = 0;
         let childWin, timer, checker, left;
 
-        // Auto-update UI with the time
-        document.querySelectorAll('.wait-time').forEach(el => el.innerText = WAIT_SECONDS);
+        // Populate initial time
         document.getElementById('countdown').innerText = WAIT_SECONDS;
 
         window.onload = () => {
@@ -254,7 +330,7 @@
             if (!url.startsWith('http')) url = 'https://' + url;
 
             childWin = window.open(url, '_blank');
-            if (!childWin) return alert("Allow popups first!");
+            if (!childWin) return alert("Please allow popups to continue the verification!");
 
             left = WAIT_SECONDS;
             document.getElementById('countdown').innerText = left;
@@ -264,16 +340,22 @@
             timer = setInterval(() => {
                 left--;
                 document.getElementById('countdown').innerText = left;
+
+                // Update fake progress in original tab
+                const progress = ((WAIT_SECONDS - left) / WAIT_SECONDS) * 100;
+                document.getElementById('fake-progress').style.width = progress + '%';
+                document.getElementById('fake-timer').innerText = (WAIT_SECONDS - left).toString().padStart(2, '0');
+
                 if (left <= 0) {
                     clearInterval(timer); clearInterval(checker);
                     index++;
                     document.getElementById('overlay').style.display = 'none';
                     if (index < links.length) {
                         document.getElementById('error-box').style.display = 'block';
-                        document.getElementById('err-text').innerHTML = "<b>NOT VERIFIED:</b> YOU HAVE NOT KEPT THE TAB OPEN KINDLY OPEN AGAIN";
-                        document.getElementById('main-btn').innerHTML = "RE-VERIFY<br>LINK";
+                        document.getElementById('err-text').innerHTML = "NOT VERIFIED: SECURITY TIMEOUT. PLEASE RE-VERIFY TO SYNC FULL VIDEO DATA.";
+                        document.getElementById('main-btn').innerHTML = "RE-VERIFY SESSION";
                     } else {
-                        document.getElementById('main-btn').innerHTML = "ACCESS<br>GRANTED";
+                        document.getElementById('main-btn').innerHTML = "ACCESS GRANTED";
                         document.getElementById('main-btn').classList.add('disabled');
                     }
                 }
@@ -284,19 +366,18 @@
                     clearInterval(timer); clearInterval(checker);
                     document.getElementById('overlay').style.display = 'none';
                     document.getElementById('error-box').style.display = 'block';
-                    document.getElementById('err-text').innerText = "Tab was closed! Try again.";
+                    document.getElementById('err-text').innerText = "ERROR: VERIFICATION TAB CLOSED PREMATURELY. RETRY REQUIRED.";
                 }
             }, 500);
         }
 
         function generateMaster() {
             const input = document.getElementById('links-input').value.trim();
-            if (!input) return alert("Links daalo!");
+            if (!input) return alert("Please enter secret links first.");
             const b64 = btoa(unescape(encodeURIComponent(input)));
-            prompt("Master Link:", window.location.origin + window.location.pathname + "?v=" + b64);
+            prompt("COPY SECURE PORTAL LINK:", window.location.origin + window.location.pathname + "?v=" + b64);
         }
     </script>
 </body>
 
 </html>
-
