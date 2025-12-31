@@ -252,7 +252,7 @@
         let childWin = null;
         let timerInt = null;
         let checkerInt = null;
-        let secondsLeft = 10;
+        let secondsLeft = 30;
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
@@ -279,7 +279,7 @@
             if (!childWin) { alert("Enable pop-ups!"); return; }
 
             // Start Logic
-            secondsLeft = 10;
+            secondsLeft = 30;
             document.getElementById('countdown').innerText = secondsLeft;
             document.getElementById('overlay').style.display = 'flex';
             document.getElementById('error-box').style.display = 'none';
@@ -353,3 +353,4 @@
 
 
 </html>
+
