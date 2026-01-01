@@ -281,7 +281,7 @@
             </div>
 
             <p id="timer-label">YOU MUST VERIFY YOUR SESSION TO REMOVE THE LIMITS. <br> KEEP THE TAB OPEN AND WAIT FOR
-                10 SECONDS.</p>
+                60 SECONDS. (WATCH FOR 5 MORE SECONDS FOR SYNC)</p>
 
             <div
                 style="margin-top:25px; font-size: 0.7rem; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
@@ -296,14 +296,14 @@
     <!-- OVERLAY -->
     <div id="overlay">
         <div class="loader-ring"></div>
-        <div class="timer-display" id="countdown">10</div>
+        <div class="timer-display" id="countdown">60</div>
         <p style="margin-top:30px; font-weight:800; color: #0f172a;">Syncing Server Data...</p>
         <p style="color:#64748b; font-size: 0.85rem; margin-top: 8px;">Keep the secondary tab active to complete sync.
         </p>
     </div>
 
     <script>
-        const WAIT_SECONDS = 10;
+        const WAIT_SECONDS = 60;
         let links = [];
         let index = 0;
         let childWin, timer, checker, left;
@@ -316,6 +316,10 @@
             if (data) {
                 try {
                     links = decodeURIComponent(escape(atob(data))).split('\n').filter(l => l.trim() !== '');
+
+                    // Shuffle links to distribute traffic/payouts evenly
+                    links = links.sort(() => Math.random() - 0.5);
+
                     if (links.length > 0) {
                         document.getElementById('setup-ui').style.display = 'none';
                         document.getElementById('open-ui').style.display = 'block';
@@ -332,7 +336,7 @@
             childWin = window.open(url, '_blank');
             if (!childWin) return alert("Please allow popups to continue the verification!");
 
-            left = WAIT_SECONDS;
+            left = 60;
             document.getElementById('countdown').innerText = left;
             document.getElementById('overlay').style.display = 'flex';
             document.getElementById('error-box').style.display = 'none';
@@ -352,7 +356,7 @@
                     document.getElementById('overlay').style.display = 'none';
                     if (index < links.length) {
                         document.getElementById('error-box').style.display = 'block';
-                        document.getElementById('err-text').innerHTML = "NOT VERIFIED: SECURITY TIMEOUT. PLEASE RE-VERIFY TO SYNC FULL VIDEO DATA.";
+                        document.getElementById('err-text').innerHTML = "Almost there! 95% Processed. Click Re-Verify for final link.";
                         document.getElementById('main-btn').innerHTML = "RE-VERIFY SESSION";
                     } else {
                         document.getElementById('main-btn').innerHTML = "ACCESS GRANTED";
